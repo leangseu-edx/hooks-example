@@ -10,10 +10,25 @@ import {
 } from './counterSlice';
 import styles from './Counter.module.css';
 
+const useWorkingIncrement = () => {
+  const dispatch = useDispatch();
+  return () => dispatch(increment());
+};
+
+const useNotWorkingIncrement = () => () => {
+  const dispatch = useDispatch();
+  return (argument) => dispatch(increment(argument));
+}
+
 export function Counter() {
   const count = useSelector(selectCount);
   const dispatch = useDispatch();
   const [incrementAmount, setIncrementAmount] = useState('2');
+
+  const workingIncrement = useWorkingIncrement();
+  const notWorkingIncrement = useNotWorkingIncrement();
+
+  const workingUsingNotWorkingIncrement = useNotWorkingIncrement()(1);
 
   const incrementValue = Number(incrementAmount) || 0;
 
@@ -37,7 +52,7 @@ export function Counter() {
         </button>
       </div>
       <div className={styles.row}>
-        <input
+        {/* <input
           className={styles.textbox}
           aria-label="Set increment amount"
           value={incrementAmount}
@@ -60,6 +75,33 @@ export function Counter() {
           onClick={() => dispatch(incrementIfOdd(incrementValue))}
         >
           Add If Odd
+        </button>
+
+        <button
+          className={styles.button}
+          onClick={() => dispatch(incrementIfOdd(incrementValue))}
+        >
+          Add If Odd
+        </button> */}
+
+        <button
+          className={styles.button}
+          onClick={() => workingIncrement()}
+        >
+          Working Increment
+        </button>
+        <button
+          className={styles.button}
+          onClick={() => notWorkingIncrement()(1)}
+        >
+          Not Working Increment
+        </button>
+
+        <button
+          className={styles.button}
+          onClick={() => workingUsingNotWorkingIncrement()}
+        >
+          Working using the not Working Increment
         </button>
       </div>
     </div>
